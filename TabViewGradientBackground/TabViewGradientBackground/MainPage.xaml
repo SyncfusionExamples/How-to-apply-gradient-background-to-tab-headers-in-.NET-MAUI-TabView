@@ -2,80 +2,36 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
               xmlns:tabView="clr-namespace:Syncfusion.Maui.TabView;assembly=Syncfusion.Maui.TabView"
+             xmlns:local="clr-namespace:TabViewGradientBackground"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="TabViewGradientBackground.MainPage">
 
+    <ContentPage.BindingContext>
+        <local:MainPageViewModel/>
+    </ContentPage.BindingContext>
 
-    <ContentPage.Resources>
-        <LinearGradientBrush x:Key="HeaderStaticGradient" StartPoint="0,0" EndPoint="1,0">
-            <GradientStop Color="#6A11CB" Offset="0.0" />
-            <GradientStop Color="#2575FC" Offset="1.0" />
-        </LinearGradientBrush>
-    </ContentPage.Resources>
-
-    <tabView:SfTabView
-            ItemsSource="{Binding Tabs}"
-            TabBarPlacement="Top"
-            IndicatorPlacement="Bottom"
-            IndicatorBackground="#FFFFFF60"
-            TabWidthMode="SizeToContent">
+    <tabView:SfTabView x:Name="tabView" ItemsSource="{Binding TabItems}" IndicatorPlacement="Fill"
+                       SelectionChanged="tabView_SelectionChanged">
 
         <tabView:SfTabView.HeaderItemTemplate>
             <DataTemplate>
-                <Border
-                        Padding="10,6"
-                        Background="{StaticResource HeaderStaticGradient}"
-                        StrokeShape="RoundRectangle 8">
-
-                    <Grid ColumnSpacing="8">
-                        <Label WidthRequest="100"
-                                Text="{Binding Title}"
-                                TextColor="{StaticResource HeaderTextColor}"
-                                FontSize="14"
-                                HorizontalTextAlignment="Center"
-                                VerticalTextAlignment="Center"
-                                HorizontalOptions="Center" />
-                    </Grid>
-
+                <Border Background="{Binding HeaderBrush}">
+                    <Label Text="{Binding Title}"
+                       WidthRequest="132"
+                       HorizontalTextAlignment="Center"
+                       VerticalTextAlignment="Center"
+                       TextColor="White"/>
                 </Border>
             </DataTemplate>
         </tabView:SfTabView.HeaderItemTemplate>
 
         <tabView:SfTabView.ContentItemTemplate>
             <DataTemplate>
-                <Grid Padding="16" RowSpacing="12">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="300"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <HorizontalStackLayout Grid.Row="0" Spacing="8">
-                        <Label Text="{Binding Title}"
-                FontAttributes="Bold"
-                FontSize="18"
-                VerticalTextAlignment="Center"/>
-                    </HorizontalStackLayout>
-
-                    <BoxView Grid.Row="1" HeightRequest="1" Color="#E0E0E0"/>
-
-                    <ScrollView Grid.Row="2">
-                        <Label Text="{Binding ContentText}"
-                FontSize="14"
-                TextColor="#333333"/>
-                    </ScrollView>
-                    <HorizontalStackLayout Grid.Row="3" Spacing="10">
-                        <Button Text="Refresh"
-                 BackgroundColor="#2196F3"
-                 TextColor="White"
-                 CornerRadius="8"
-                 Clicked="OnRefreshClicked"/>
-                        <Button Text="More"
-                 BackgroundColor="#EEEEEE"
-                 TextColor="#333333"
-                 CornerRadius="8"
-                 Clicked="OnMoreClicked"/>
-                    </HorizontalStackLayout>
+                <Grid Padding="16">
+                    <Label Text="{Binding ContentText}"
+                       FontSize="14"
+                       TextColor="#333333"
+                       LineBreakMode="WordWrap" />
                 </Grid>
             </DataTemplate>
         </tabView:SfTabView.ContentItemTemplate>

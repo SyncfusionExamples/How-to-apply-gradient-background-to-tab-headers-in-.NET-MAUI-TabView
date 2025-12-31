@@ -59,8 +59,9 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Essentials" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="$(MauiVersion)" />
 		<PackageReference Include="Syncfusion.Maui.TabView" Version="*" />
+		<PackageReference Include="Syncfusion.Maui.Core" Version="*" />
 	</ItemGroup>
 
 </Project>
