@@ -6,35 +6,62 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="TabViewGradientBackground.MainPage">
 
-    <ContentPage.BindingContext>
-        <local:MainPageViewModel/>
-    </ContentPage.BindingContext>
 
-    <tabView:SfTabView x:Name="tabView" ItemsSource="{Binding TabItems}" IndicatorPlacement="Fill"
-                       SelectionChanged="tabView_SelectionChanged">
+    <ContentPage.Resources>
+        <LinearGradientBrush x:Key="NormalGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#6A11CB" Offset="0.0" />
+            <GradientStop Color="#2575FC" Offset="1.0" />
+        </LinearGradientBrush>
 
-        <tabView:SfTabView.HeaderItemTemplate>
-            <DataTemplate>
-                <Border Background="{Binding HeaderBrush}">
-                    <Label Text="{Binding Title}"
-                       WidthRequest="132"
-                       HorizontalTextAlignment="Center"
-                       VerticalTextAlignment="Center"
-                       TextColor="White"/>
-                </Border>
-            </DataTemplate>
-        </tabView:SfTabView.HeaderItemTemplate>
+        <LinearGradientBrush x:Key="SelectedGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#FF512F" Offset="0.0" />
+            <GradientStop Color="#DD2476" Offset="1.0" />
+        </LinearGradientBrush>
 
-        <tabView:SfTabView.ContentItemTemplate>
-            <DataTemplate>
-                <Grid Padding="16">
-                    <Label Text="{Binding ContentText}"
-                       FontSize="14"
-                       TextColor="#333333"
-                       LineBreakMode="WordWrap" />
-                </Grid>
-            </DataTemplate>
-        </tabView:SfTabView.ContentItemTemplate>
+        <ResourceDictionary>
+            <Style TargetType="tabView:SfTabItem">
+                <Setter Property="VisualStateManager.VisualStateGroups">
+                    <VisualStateGroupList>
+                        <VisualStateGroup>
+                            <VisualState x:Name="NormalFilled">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="{DynamicResource NormalGradient}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                            <VisualState x:Name="SelectedFilled">
+                                <VisualState.Setters>
+                                    <Setter Property="Background" Value="{DynamicResource SelectedGradient}" />
+                                </VisualState.Setters>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateGroupList>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+
+    <tabView:SfTabView x:Name="TabView" IndicatorPlacement="Fill">
+        <tabView:SfTabItem Header="Home" TextColor="White">
+            <tabView:SfTabItem.Content>
+                    <Label Padding="12" Text="Welcome to the Home tab. Here you can find an overview of your application and quick access to essential features."
+                           FontSize="16"  LineBreakMode="WordWrap"/>
+            </tabView:SfTabItem.Content>
+        </tabView:SfTabItem>
+
+        <tabView:SfTabItem Header="Tasks" TextColor="White">
+            <tabView:SfTabItem.Content>
+                <Label Padding="12" Text="Manage your tasks efficiently. Add new tasks, track progress, and stay organized to meet your goals."
+                           FontSize="16" LineBreakMode="WordWrap"/>
+            </tabView:SfTabItem.Content>
+        </tabView:SfTabItem>
+
+        <tabView:SfTabItem Header="Reports" TextColor="White">
+            <tabView:SfTabItem.Content>
+                <Label Padding="12" Text="View detailed reports and analytics. Gain insights into your performance and make informed decisions."
+                           FontSize="16" LineBreakMode="WordWrap"/>
+            </tabView:SfTabItem.Content>
+        </tabView:SfTabItem>
     </tabView:SfTabView>
 
 </ContentPage>

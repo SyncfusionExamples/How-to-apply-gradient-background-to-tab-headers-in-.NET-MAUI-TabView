@@ -19,154 +19,60 @@ To achieve the glass-like effect, use below code.
 **Mainpage.Xaml**
  
 ```xml
-    <ContentPage.BindingContext>
-    <local:MainPageViewModel/>
-</ContentPage.BindingContext>
+    <ContentPage.Resources>
+<LinearGradientBrush x:Key="NormalGradient" StartPoint="0,0" EndPoint="1,0">
+<GradientStop Color="#6A11CB" Offset="0.0" />
+<GradientStop Color="#2575FC" Offset="1.0" />
+</LinearGradientBrush>
  
-<tabView:SfTabView x:Name="tabView" ItemsSource="{Binding TabItems}" IndicatorPlacement="Fill"
-                   SelectionChanged="tabView_SelectionChanged">
+    <LinearGradientBrush x:Key="SelectedGradient" StartPoint="0,0" EndPoint="0,1">
+<GradientStop Color="#FF512F" Offset="0.0" />
+<GradientStop Color="#DD2476" Offset="1.0" />
+</LinearGradientBrush>
  
-    <tabView:SfTabView.HeaderItemTemplate>
-        <DataTemplate>
-            <Border Background="{Binding HeaderBrush}">
-                <Label Text="{Binding Title}"
-                   WidthRequest="132"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center"
-                   TextColor="White"/>
-            </Border>
-        </DataTemplate>
-    </tabView:SfTabView.HeaderItemTemplate>
-   
-       <!--ContentItemTemplate-->
+    <ResourceDictionary>
+<Style TargetType="tabView:SfTabItem">
+<Setter Property="VisualStateManager.VisualStateGroups">
+<VisualStateGroupList>
+<VisualStateGroup>
+<VisualState x:Name="NormalFilled">
+<VisualState.Setters>
+<Setter Property="Background" Value="{DynamicResource NormalGradient}" />
+</VisualState.Setters>
+</VisualState>
+<VisualState x:Name="SelectedFilled">
+<VisualState.Setters>
+<Setter Property="Background" Value="{DynamicResource SelectedGradient}" />
+</VisualState.Setters>
+</VisualState>
+</VisualStateGroup>
+</VisualStateGroupList>
+</Setter>
+</Style>
+</ResourceDictionary>
+</ContentPage.Resources>
  
-   </tabView:SfTabView>
-```
  
-**Mainpage.Xaml.cs**
-```
-protected override void OnAppearing()
-{
-    base.OnAppearing();
-    if (BindingContext is MainPageViewModel viewModel)
-    {
-        if (tabView.SelectedIndex < 0 && viewModel.TabItems?.Count > 0)
-            tabView.SelectedIndex = 0;
+<tabView:SfTabView x:Name="TabView" IndicatorPlacement="Fill">
+<tabView:SfTabItem Header="Home" TextColor="White">
+<tabView:SfTabItem.Content>
+<Label Padding="12" Text="Welcome to the Home tab. Here you can find an overview of your application and quick access to essential features."
+                       FontSize="16"  LineBreakMode="WordWrap"/>
+</tabView:SfTabItem.Content>
+</tabView:SfTabItem>
  
-        viewModel.UpdateSelectedIndex((int)tabView.SelectedIndex);
-    }
-}
-private void tabView_SelectionChanged(object sender, TabSelectionChangedEventArgs e)
-{
-    int selectedIndex = -1;
+    <tabView:SfTabItem Header="Tasks" TextColor="White">
+<tabView:SfTabItem.Content>
+<Label Padding="12" Text="Manage your tasks efficiently. Add new tasks, track progress, and stay organized to meet your goals."
+                       FontSize="16" LineBreakMode="WordWrap"/>
+</tabView:SfTabItem.Content>
+</tabView:SfTabItem>
  
-    if (sender is SfTabView tabView)
-        selectedIndex = (int)tabView.SelectedIndex;
- 
-    if (BindingContext is MainPageViewModel viewModel && selectedIndex >= 0)
-    {
-        viewModel.UpdateSelectedIndex(selectedIndex);
-    }
-}
-```
- 
-**ViewModel**
-```
-public class MainPageViewModel : INotifyPropertyChanged
-{
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        public ObservableCollection<Model> TabItems { get; set; }
- 
-        private readonly Brush staticBrush = new LinearGradientBrush(
-            new GradientStopCollection
-            {
-        new GradientStop(Color.FromArgb("#6A11CB"), 0.0f),
-        new GradientStop(Color.FromArgb("#2575FC"), 1.0f)
-            },
-            new Point(0, 0), new Point(1, 0));
- 
-        private readonly Brush selectedBrush = new LinearGradientBrush(
-            new GradientStopCollection
-            {
-        new GradientStop(Color.FromArgb("#FF512F"), 0.0f),
-        new GradientStop(Color.FromArgb("#DD2476"), 1.0f)
-            },
-            new Point(0, 0), new Point(1, 0));
- 
-        public MainPageViewModel()
-        {
-            TabItems = new ObservableCollection<Model>
-        {
-           new Model
-            {
-                Title = "Home",
-                ContentText = "Welcome to the Home tab. Here you can find an overview of your application and quick access to essential features."
-            },
-            new Model
-            {
-                Title = "Tasks",
-                ContentText = "Manage your tasks efficiently. Add new tasks, track progress, and stay organized to meet your goals."
-            },
-            new Model
-            {
-                Title = "Reports",
-                ContentText = "View detailed reports and analytics. Gain insights into your performance and make informed decisions."
-            }
-        };
- 
-            foreach (var item in TabItems)
-                item.HeaderBrush = staticBrush;
-        }
- 
-        public void UpdateSelectedIndex(int selectedIndex)
-        {
-            if (TabItems == null || TabItems.Count == 0) return;
-            if (selectedIndex < 0 || selectedIndex >= TabItems.Count) return;
- 
-            for (int i = 0; i < TabItems.Count; i++)
-            {
-                TabItems[i].HeaderBrush = (i == selectedIndex) ? selectedBrush : staticBrush;
-            }
-        }
- 
-    }
-```
- 
-**Model**
-```
-public class Model : INotifyPropertyChanged
-{
-    private string title;
-    private string contentText;
-    private Brush headerBrush;
- 
-    public string Title
-    {
-        get => title;
-        set { title = value; OnPropertyChanged(nameof(Title)); }
-    }
- 
-    public string ContentText
-    {
-        get => contentText;
-        set { contentText = value; OnPropertyChanged(nameof(ContentText)); }
-    }
- 
-    public Brush HeaderBrush
-    {
-        get => headerBrush;
-        set { headerBrush = value; OnPropertyChanged(nameof(HeaderBrush)); }
-    }
- 
-    public event PropertyChangedEventHandler? PropertyChanged;
- 
-    protected void OnPropertyChanged(string? propertyName)
-    {
-        var handler = PropertyChanged;
-        if (handler != null)
-            handler(this, new PropertyChangedEventArgs(propertyName));
-    }
-}
+    <tabView:SfTabItem Header="Reports" TextColor="White">
+<tabView:SfTabItem.Content>
+<Label Padding="12" Text="View detailed reports and analytics. Gain insights into your performance and make informed decisions."
+                       FontSize="16" LineBreakMode="WordWrap"/>
+</tabView:SfTabItem.Content>
+</tabView:SfTabItem>
+</tabView:SfTabView>
 ```
